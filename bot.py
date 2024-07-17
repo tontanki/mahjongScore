@@ -1,5 +1,7 @@
 import discord
 from discord.ext import commands
+import json
+import os
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -8,9 +10,25 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 # ユーザー情報を保存する辞書
 players = {}
 
+# データ保存用のファイルパス
+data_file = 'players_data.json'
+
+
+def load_data():
+    global players
+    if os.path.exists(data_file):
+        with open(data_file, 'r', encoding='utf-8') as f:
+            players = json.load(f)
+
+
+def save_data():
+    with open(data_file, 'w', encoding='utf-8') as f:
+        json.dump(players, f, ensure_ascii=False, indent=4)
+
 
 @bot.event
 async def on_ready():
+    load_data()
     print(f'Logged in as {bot.user.name}')
 
 
@@ -52,6 +70,7 @@ async def score(ctx, *args):
                 await ctx.send("プレイヤーが登録されていません。: " + player)
 
         players[most_points_player] += abs(sum_points)
+        save_data()
         await ctx.send("スコアが更新されました。")
     except Exception as e:
         await ctx.send(f"エラーが発生しました: {e}")
@@ -94,6 +113,7 @@ async def register(ctx, *players_to_register: str):
             registered_players.append(player)
 
     if registered_players:
+        save_data()
         await ctx.send(f"{', '.join(registered_players)} を登録しました。")
     if already_registered:
         await ctx.send(f"{', '.join(already_registered)} はすでに登録されています。")
@@ -104,6 +124,7 @@ async def delete_player(ctx, player: str):
     global players
     if player in players:
         del players[player]
+        save_data()
         await ctx.send(f"{player} を登録から削除しました。")
     else:
         player_list = "\n".join(players.keys())
