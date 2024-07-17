@@ -18,33 +18,54 @@ async def on_ready():
 async def score(ctx, *args):
     global players
     try:
+        player_count = len(args) // 2  # 引数の数からプレイヤー数を計算
+        base_score = 30000 if player_count == 4 else 40000
+
+        most_points = max([int(args[i + 1]) for i in range(0, len(args), 2)])
+        most_points_player = None
+        sum_points = 0
+
         for i in range(0, len(args), 2):
             player = args[i]
             points = int(args[i + 1])
+
+            # 最高点のプレイヤーはのちに計算
+            if points == most_points:
+                # すでにmost_points_playerが存在すればスキップ
+                if most_points_player:
+                    continue
+                # 最高点のプレイヤーを記録
+                most_points_player = player
+                continue
+
+            # 100で割って四捨五入する
+            points = round(points / 100) * 100
+
+            # ベーススコアを引いて合計点数に加算
+            points = points - base_score
+            points = round(points / 1000)
+            sum_points += points
+
             if player in players:
                 players[player] += points
             else:
-                players[player] = points
+                await ctx.send("プレイヤーが登録されていません。: " + player)
+
+        players[most_points_player] += abs(sum_points)
         await ctx.send("スコアが更新されました。")
     except Exception as e:
         await ctx.send(f"エラーが発生しました: {e}")
 
 
 @bot.command()
-async def ranking(ctx, player_count: int):
+async def ranking(ctx):
     global players
-    if player_count not in [3, 4]:
-        await ctx.send("プレイヤー数は3人または4人でなければなりません。")
-        return
-
-    base_score = 30000 if player_count == 4 else 40000
 
     ranking = sorted(players.items(), key=lambda x: x[1], reverse=True)
     response = "麻雀ランキング:\n"
 
-    for i, (player, score) in enumerate(ranking, start=1):
-        adjusted_score = (score - base_score) / 1000
-        response += f"{i}. {player}: {score} 点 (調整後: {adjusted_score:.1f})\n"
+    for rank, (player, score) in enumerate(ranking, start=1):
+        response += f"{rank}. {player}: {score}\n"
 
     await ctx.send(response)
 
@@ -60,13 +81,22 @@ async def list_players(ctx):
 
 
 @bot.command()
-async def register(ctx, player: str):
+async def register(ctx, *players_to_register: str):
     global players  # players変数をグローバルとして使用
-    if player in players:
-        await ctx.send(f"{player} はすでに登録されています。")
-    else:
-        players[player] = 0  # スコアを固定で0に設定
-        await ctx.send(f"{player} を登録しました。")
+    registered_players = []
+    already_registered = []
+
+    for player in players_to_register:
+        if player in players:
+            already_registered.append(player)
+        else:
+            players[player] = 0  # スコアを固定で0に設定
+            registered_players.append(player)
+
+    if registered_players:
+        await ctx.send(f"{', '.join(registered_players)} を登録しました。")
+    if already_registered:
+        await ctx.send(f"{', '.join(already_registered)} はすでに登録されています。")
 
 
 @bot.command()
