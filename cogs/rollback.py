@@ -13,7 +13,12 @@ class RollbackCog(commands.Cog):
         """
         スコアについてロールバックする
         """
-        message = player_data.rollback_player(args)
+        if len(args) != 1:
+            await ctx.send("プレイヤー名を正確に入力してください。")
+            return
+
+        player_name = args[0]
+        message = player_data.rollback_player(player_name)
 
         if message:
             await ctx.send(message)
