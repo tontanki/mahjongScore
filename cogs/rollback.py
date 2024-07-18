@@ -1,8 +1,6 @@
 from discord.ext import commands
 from player.player_data import PlayerData
 
-player_data = PlayerData()
-
 
 class RollbackCog(commands.Cog):
     def __init__(self, bot):
@@ -17,13 +15,14 @@ class RollbackCog(commands.Cog):
             await ctx.send("プレイヤー名を正確に入力してください。")
             return
 
+        player_data = PlayerData()
         player_name = args[0]
         message = player_data.rollback_player(player_name)
 
         if message:
             await ctx.send(message)
         else:
-            await ctx.send("ロールバックしました。")
+            await ctx.send("ロールバックできませんでした")
 
 
 async def setup(bot):

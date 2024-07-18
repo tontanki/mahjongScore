@@ -1,7 +1,5 @@
 from discord.ext import commands
-from player.history_manager import HistoryManager
-
-history_manager = HistoryManager()
+from player.player_data import PlayerData
 
 
 class HistoryCog(commands.Cog):
@@ -13,7 +11,8 @@ class HistoryCog(commands.Cog):
         """
         スコアの履歴を見る
         """
-        result = history_manager.print_all_players_history()
+        player_data = PlayerData()
+        result = player_data.show_history()
         await ctx.send(result)
 
 
