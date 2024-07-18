@@ -1,5 +1,6 @@
 from discord.ext import commands
 from player.player_data import PlayerData
+from tabulate import tabulate
 
 
 class RankingCog(commands.Cog):
@@ -9,13 +10,16 @@ class RankingCog(commands.Cog):
 
     @commands.command(name='ranking')
     async def ranking_command(self, ctx):
-        response = self.players.format_ranking()
-        await ctx.send(response)
+        response = self.players.show_ranking()
 
-    @commands.command(name='delete_player')
-    async def delete_player_command(self, ctx, player: str):
-        self.players.delete_player(player)
-        await ctx.send(f"{player} を削除しました。")
+    # データのリストを作成
+        data = [(player, score) for player, score in response]
+
+        # タブレートを使用して表を作成
+        ranking_message = tabulate(
+            data, headers=["Player", "Score"], tablefmt="grid")
+
+        await ctx.send(f"```\n{ranking_message}\n```")
 
 
 async def setup(bot):

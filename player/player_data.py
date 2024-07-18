@@ -40,8 +40,23 @@ class PlayerData:
         self.connection.commit()
         return registered_players, already_registered
 
+    def show_ranking(self):
+        self.cursor.execute('''SELECT * FROM scores ORDER BY score DESC''')
+        return self.cursor.fetchall()
+
+    def delete_player(self, player_name):
+        self.cursor.execute(
+            '''SELECT * FROM scores WHERE player_name=?''', (player_name,))
+        result = self.cursor.fetchone()
+        if result:
+            self.cursor.execute(
+                '''DELETE FROM scores WHERE player_name=?''', (player_name,))
+            self.connection.commit()
+            return f"{player_name}を削除しました"
+        else:
+            return f"{player_name}は登録されていません"
+
     def insert_score(self, player_name, timestamp, score):
-        # Check if player already exists for the given timestamp
         self.cursor.execute('''
             SELECT * FROM scores
             WHERE player_name=? AND timestamp=?
