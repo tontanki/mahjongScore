@@ -6,9 +6,9 @@ class RegisterCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='register')  # コマンド名をここで指定
+    @commands.command(name='register')
     async def register_command(self, ctx, *players_to_register):
-        player_data = PlayerData()  # PlayerDataインスタンスを作成または参照
+        player_data = PlayerData()
         registered_players, already_registered = player_data.register_player(
             *players_to_register)
 
