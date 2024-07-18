@@ -1,6 +1,7 @@
 import os
+import asyncio
 from dotenv import load_dotenv
-from bot import bot  # bot.pyからbotインスタンスをインポート
+from bot import bot
 from keep import keep_alive
 
 # .envファイルから環境変数を読み込む
@@ -16,4 +17,15 @@ if not DEVELOPMENT_MODE:
     # 本番モードの場合、Webサーバーを起動してBotを常時稼働させる
     keep_alive()
 
-bot.run(TOKEN)
+# Cogをロードする非同期関数
+
+
+async def load_extensions():
+    initial_extensions = ['cogs.score', 'cogs.ranking', 'cogs.register']
+    for extension in initial_extensions:
+        await bot.load_extension(extension)
+
+if __name__ == '__main__':
+    # 非同期関数を実行してCogをロードする
+    asyncio.run(load_extensions())
+    bot.run(TOKEN)

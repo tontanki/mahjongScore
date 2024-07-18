@@ -25,6 +25,6 @@ async def calculate_scores(args, player_count):
         points = round(points / 1000)
         sum_points += points
 
-        update_player_scores(player, points)
+        await update_player_scores(player, points)
 
-    update_player_scores(most_points_player, abs(sum_points))
+    await update_player_scores(most_points_player, abs(sum_points))

@@ -13,6 +13,9 @@ class PlayerData:
                 return json.load(f)
         return {}
 
+    def refresh_data(self):
+        self.players = self.load_data()
+
     def save_data(self):
         with open(self.data_file, 'w', encoding='utf-8') as f:
             json.dump(self.players, f, ensure_ascii=False, indent=4)
@@ -25,9 +28,11 @@ class PlayerData:
         self.save_data()
 
     def format_ranking(self):
-        """プレイヤーのスコアを降順にソートし、フォーマットされたランキング文字列を返す"""
+        self.refresh_data()
         ranking = sorted(self.players.items(),
                          key=lambda x: x[1], reverse=True)
+        if not ranking:
+            return "プレイヤーが存在しません"
         response = "ランキング:\n"
         for rank, (player, score) in enumerate(ranking, start=1):
             response += f"{rank}. {player}: {score}\n"
@@ -41,10 +46,26 @@ class PlayerData:
             if player in self.players:
                 already_registered.append(player)
             else:
-                self.players[player] = 0  # スコアを固定で0に設定
+                self.players[player] = 0
                 registered_players.append(player)
 
         if registered_players:
             self.save_data()
 
         return registered_players, already_registered
+
+    def delete_player(self, *players_to_delete):
+        deleted_players = []
+        not_found_players = []
+
+        for player in players_to_delete:
+            if player in self.players:
+                del self.players[player]  # プレイヤーを削除
+                deleted_players.append(player)
+            else:
+                not_found_players.append(player)
+
+        if deleted_players:
+            self.save_data()  # 変更を保存
+
+        return deleted_players, not_found_players
