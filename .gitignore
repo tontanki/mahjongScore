@@ -2,3 +2,4 @@
 **/__pycache__/**
 .mahjongScore.code-workspace
 players_data.json
+players_history.json
