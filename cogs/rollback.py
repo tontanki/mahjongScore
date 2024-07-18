@@ -1,5 +1,5 @@
 from discord.ext import commands
-from player.playerData import PlayerData
+from player.player_data import PlayerData
 
 player_data = PlayerData()
 

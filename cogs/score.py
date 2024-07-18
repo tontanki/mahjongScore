@@ -13,6 +13,7 @@ class ScoreCog(commands.Cog):
         !score playerNAME scoreNUM playerNAME scoreNUM ...
         3人分なら4万点返し、4人分なら3万点返しをする。 
         """
+
         result = await update_scores(args)
         await ctx.send(result)
 

@@ -1,4 +1,4 @@
-from player.playerData import PlayerData
+from player.player_data import PlayerData
 
 
 async def update_player_scores(player, point):
