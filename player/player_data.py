@@ -18,15 +18,6 @@ class PlayerData:
                 PRIMARY KEY (player_name)
             )
         ''')
-        self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS history (
-                player_name TEXT,
-                timestamp TEXT,
-                score INTEGER,
-                total_score INTEGER,
-                PRIMARY KEY (player_name, timestamp)
-            )
-        ''')
         self.connection.commit()
 
     def register_player(self, *players_name):
