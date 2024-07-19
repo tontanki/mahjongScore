@@ -33,8 +33,8 @@
 ## インストール
 1. このリポジトリをクローンします。
     ```sh
-    git clone https://github.com/yourusername/mahjong-score-bot.git
-    cd mahjong-score-bot
+    git clone https://github.com/yourusername/mahjongScore.git
+    cd mahjongScore
     ```
 2. 必要なパッケージをインストールします。
     ```sh
