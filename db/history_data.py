@@ -1,10 +1,8 @@
 import sqlite3
 
-from datetime import datetime
-
 
 class HistoryData:
-    def __init__(self, db_file='history.db'):
+    def __init__(self, db_file='player_history.db'):
         self.db_file = db_file
         self.connection = sqlite3.connect(self.db_file)
         self.cursor = self.connection.cursor()
@@ -13,44 +11,65 @@ class HistoryData:
     def _create_table(self):
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS history (
-                player_name TEXT,
+                player_id INTEGER,
                 timestamp TEXT,
                 score INTEGER,
-                PRIMARY KEY (player_name, timestamp)
+                PRIMARY KEY (player_id, timestamp),
+                FOREIGN KEY (player_id) REFERENCES players (player_id)
             )
         ''')
         self.connection.commit()
 
     async def insert_score(self, player_name, score, timestamp):
-        self.cursor.execute('''
-            INSERT INTO history(player_name, timestamp, score) VALUES(?, ?, ?)
-        ''', (player_name, timestamp, score))
-        self.connection.commit()
+        player_id = self.get_player_id(player_name)
+        if player_id:
+            self.cursor.execute('''
+                INSERT INTO history(player_id, timestamp, score) VALUES(?, ?, ?)
+            ''', (player_id, timestamp, score))
+            self.connection.commit()
+        else:
+            raise ValueError(f"{player_name}は登録されていません")
 
     def show_history(self):
-        self.cursor.execute(
-            '''SELECT * FROM history ORDER BY timestamp DESC''')
+        self.cursor.execute('''
+            SELECT players.player_name, history.timestamp, history.score
+            FROM history
+            JOIN players ON history.player_id = players.player_id
+            ORDER BY history.timestamp DESC
+        ''')
         return self.cursor.fetchall()
 
-    async def get_total_score(self, player_name):
-        self.cursor.execute('''
-            SELECT SUM(score) FROM history WHERE player_name = ?
-        ''', (player_name,))
-        total_score = self.cursor.fetchone()[0]
-        return total_score
-
     async def delete_latest_score(self, player_name):
-        self.cursor.execute('''
-            SELECT timestamp FROM history WHERE player_name = ? ORDER BY timestamp DESC LIMIT 1
-        ''', (player_name,))
-        latest_timestamp = self.cursor.fetchone()
-        if latest_timestamp:
-            timestamp = latest_timestamp[0]
-            # 同じtimestampを持つすべてのレコードを削除
+        player_id = self.get_player_id(player_name)
+        if player_id:
             self.cursor.execute('''
-                DELETE FROM history WHERE timestamp = ?
-            ''', (timestamp,))
-            self.connection.commit()
-            return f"同じtimestampを持つすべてのデータを削除しました。"
+                SELECT timestamp FROM history WHERE player_id = ? ORDER BY timestamp DESC LIMIT 1
+            ''', (player_id,))
+            latest_timestamp = self.cursor.fetchone()
+            if latest_timestamp:
+                timestamp = latest_timestamp[0]
+                self.cursor.execute('''
+                    DELETE FROM history WHERE player_id = ? AND timestamp = ?
+                ''', (player_id, timestamp))
+                self.connection.commit()
+                return "同じtimestampを持つデータを削除しました。"
+            else:
+                return "スコアは見つかりませんでした。"
         else:
-            return f"{player_name}のスコアは見つかりませんでした。"
+            return "プレイヤーは登録されていません"
+
+    def get_player_id(self, player_name):
+        self.cursor.execute(
+            '''SELECT player_id FROM players WHERE player_name=?''', (player_name,))
+        result = self.cursor.fetchone()
+        return result[0] if result else None
+
+    async def get_total_score(self, player_name):
+        player_id = self.get_player_id(player_name)
+        if player_id:
+            self.cursor.execute(
+                '''SELECT SUM(score) FROM history WHERE player_id=?''', (player_id,))
+            result = self.cursor.fetchone()
+            return result[0] if result else 0
+        else:
+            raise ValueError(f"{player_name}は登録されていません")
