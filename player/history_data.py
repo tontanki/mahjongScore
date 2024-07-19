@@ -16,8 +16,18 @@ class HistoryData:
                 player_name TEXT,
                 timestamp TEXT,
                 score INTEGER,
-                total_score INTEGER,
                 PRIMARY KEY (player_name, timestamp)
             )
         ''')
         self.connection.commit()
+
+    async def insert_score(self, player_name, score, timestamp):
+        self.cursor.execute('''
+            INSERT INTO history(player_name, timestamp, score) VALUES(?, ?, ?)
+        ''', (player_name, timestamp, score))
+        self.connection.commit()
+
+    def show_history(self):
+        self.cursor.execute(
+            '''SELECT * FROM history ORDER BY timestamp DESC''')
+        return self.cursor.fetchall()

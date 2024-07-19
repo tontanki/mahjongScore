@@ -1,5 +1,5 @@
 from discord.ext import commands
-from player.player_data import PlayerData
+from player.history_data import HistoryData
 
 
 class HistoryCog(commands.Cog):
@@ -11,8 +11,8 @@ class HistoryCog(commands.Cog):
         """
         スコアの履歴を見る
         """
-        player_data = PlayerData()
-        result = player_data.show_history()
+        history = HistoryData()
+        result = history.show_history()
         await ctx.send(result)
 
 

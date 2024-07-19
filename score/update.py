@@ -1,9 +1,12 @@
-from player.player_data import PlayerData
+from datetime import datetime
+from player.history_data import HistoryData
 
 
-async def update_player_scores(player, point, timestamp):
+async def update_player_scores(scores):
     try:
-        player_data = PlayerData()
-        player_data.update_data(player, point, timestamp)
+        history = HistoryData()
+        timestamp = datetime.timestamp(datetime.now())
+        for player, score in scores:
+            await history.insert_score(player, score, timestamp)
     except Exception as e:
         return f"エラーが発生しました: {e}"

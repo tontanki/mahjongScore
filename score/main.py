@@ -6,7 +6,7 @@ async def update_scores(args):
     try:
         validate_scores(args)
         player_count = await calculate_player_count(args)
-        await calculate_scores(args, player_count)
-        return "スコアが更新されました。"
+        return await calculate_scores(args, player_count)
+
     except Exception as e:
         return f"エラーが発生しました: {e}"

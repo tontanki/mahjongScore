@@ -7,11 +7,11 @@ async def calculate_player_count(args):
 
 
 async def calculate_scores(args, player_count):
-    timestamp = datetime.datetime.now().timestamp()
     base_score = 30000 if player_count == 4 else 40000
     most_points = max([int(args[i + 1]) for i in range(0, len(args), 2)])
     most_points_player = None
     sum_points = 0
+    scores = []
 
     for i in range(0, len(args), 2):
         player = args[i]
@@ -27,6 +27,7 @@ async def calculate_scores(args, player_count):
         points = round(points / 1000)
         sum_points += points
 
-        await update_player_scores(player, points, timestamp)
+        scores.append((player, points))
 
-    await update_player_scores(most_points_player, abs(sum_points), timestamp)
+    scores.append((most_points_player, abs(sum_points)))
+    return scores

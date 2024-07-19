@@ -1,5 +1,7 @@
 from discord.ext import commands
 from score.main import update_scores
+from player.history_data import HistoryData
+from score.update import update_player_scores
 
 
 class ScoreCog(commands.Cog):
@@ -13,9 +15,12 @@ class ScoreCog(commands.Cog):
         !score playerNAME scoreNUM playerNAME scoreNUM ...
         3人分なら4万点返し、4人分なら3万点返しをする。 
         """
-
-        result = await update_scores(args)
-        await ctx.send(result)
+        try:
+            scores = await update_scores(args)
+            await update_player_scores(scores)
+            await ctx.send(f"スコアを更新しました。")
+        except Exception as e:
+            await ctx.send(f"エラーが発生しました: {e}")
 
 
 async def setup(bot):
