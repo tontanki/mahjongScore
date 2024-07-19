@@ -1,5 +1,5 @@
 from discord.ext import commands
-from player.history_data import HistoryData
+from db.history_data import HistoryData
 from tabulate import tabulate
 from datetime import datetime
 

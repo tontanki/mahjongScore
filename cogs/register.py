@@ -1,5 +1,5 @@
 from discord.ext import commands
-from player.player_data import PlayerData
+from db.player_data import PlayerData
 
 
 class RegisterCog(commands.Cog):

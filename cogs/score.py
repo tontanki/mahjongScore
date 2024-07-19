@@ -1,6 +1,6 @@
 from discord.ext import commands
 from score.main import update_scores
-from player.history_data import HistoryData
+from db.history_data import HistoryData
 from score.update import update_player_scores
 
 

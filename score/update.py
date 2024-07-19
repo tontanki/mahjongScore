@@ -1,6 +1,6 @@
 from datetime import datetime
-from player.history_data import HistoryData
-from player.player_data import PlayerData
+from db.history_data import HistoryData
+from db.player_data import PlayerData
 
 
 async def update_player_scores(scores):
