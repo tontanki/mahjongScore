@@ -38,3 +38,19 @@ class HistoryData:
         ''', (player_name,))
         total_score = self.cursor.fetchone()[0]
         return total_score
+
+    async def delete_latest_score(self, player_name):
+        self.cursor.execute('''
+            SELECT timestamp FROM history WHERE player_name = ? ORDER BY timestamp DESC LIMIT 1
+        ''', (player_name,))
+        latest_timestamp = self.cursor.fetchone()
+        if latest_timestamp:
+            timestamp = latest_timestamp[0]
+            # 同じtimestampを持つすべてのレコードを削除
+            self.cursor.execute('''
+                DELETE FROM history WHERE timestamp = ?
+            ''', (timestamp,))
+            self.connection.commit()
+            return f"同じtimestampを持つすべてのデータを削除しました。"
+        else:
+            return f"{player_name}のスコアは見つかりませんでした。"

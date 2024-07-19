@@ -1,5 +1,6 @@
 from discord.ext import commands
 from player.player_data import PlayerData
+from player.history_data import HistoryData
 
 
 class DeleteCog(commands.Cog):
@@ -10,6 +11,12 @@ class DeleteCog(commands.Cog):
     async def delete_player_command(self, ctx, player: str):
         player_data = PlayerData()
         response = player_data.delete_player(player)
+        await ctx.send(response)
+
+    @commands.command(name='delete_score')
+    async def delete_score_command(self, ctx, player: str):
+        history = HistoryData()
+        response = await history.delete_latest_score(player)
         await ctx.send(response)
 
 
