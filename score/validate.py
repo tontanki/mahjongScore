@@ -1,22 +1,31 @@
-def validate_scores(input_str):
-    # 入力文字列をリストとして受け取って使用する
-    parts = input_str
+def validate_scores(parts):
+    # 入力が3回または4回のペアであることを確認
+    if len(parts) not in [6, 8]:
+        raise ValueError("入力はplayer_nameとNUMのペアで3回または4回でなければなりません。")
 
-    # スコアのみを抽出（偶数インデックスはプレイヤー名なのでスキップ）
+    # プレイヤー名を抽出
+    player_names = [parts[i] for i in range(0, len(parts), 2)]
+
+    # プレイヤー名の重複をチェック
+    if len(player_names) != len(set(player_names)):
+        raise ValueError("プレイヤー名が重複しています。")
+
+    # 入力をプレイヤー名とスコアのリストとして受け取る
     scores = [parts[i] for i in range(1, len(parts), 2)]
 
-    # スコアが全て数値であるか確認
-    if not all(s.lstrip('-').isdigit() for s in scores):
+    # スコアが全て数値であるか確認し、数値に変換
+    try:
+        scores = [int(s) for s in scores]
+    except ValueError:
         raise ValueError("スコアは全て数値でなければなりません。")
 
-    # 数値に変換
-    scores = [int(s) for s in scores]
-
-    # マイナスの数値を考慮して合計スコアの検証
+    # 合計スコアの検証
     total_score = sum(scores)
-    if (len(scores) == 4 and total_score != 100000) or (len(scores) == 3 and total_score != 105000):
-        raise ValueError("合計スコアが不正です。")
+    expected_total = 100000 if len(scores) == 4 else 105000
+    if total_score != expected_total:
+        raise ValueError(f"合計スコアが不正です。期待値: {
+                         expected_total}, 実際: {total_score}")
 
-    # 1と2の位が0かどうかを確認
+    # スコアが100の倍数であるかを確認
     if any(s % 100 != 0 for s in scores):
         raise ValueError("スコアは100の倍数でなければなりません。")

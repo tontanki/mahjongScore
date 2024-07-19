@@ -16,8 +16,11 @@ class ScoreCog(commands.Cog):
         3人分なら4万点返し、4人分なら3万点返しをする。 
         """
         try:
-            await update_scores(args)
-            await ctx.send(f"スコアを更新しました。")
+            result = await update_scores(args)
+            if result:
+                await ctx.send(result)
+            else:
+                await ctx.send(f"スコアを更新しました。")
         except Exception as e:
             await ctx.send(f"エラーが発生しました: {e}")
 
