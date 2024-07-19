@@ -31,3 +31,10 @@ class HistoryData:
         self.cursor.execute(
             '''SELECT * FROM history ORDER BY timestamp DESC''')
         return self.cursor.fetchall()
+
+    async def get_total_score(self, player_name):
+        self.cursor.execute('''
+            SELECT SUM(score) FROM history WHERE player_name = ?
+        ''', (player_name,))
+        total_score = self.cursor.fetchone()[0]
+        return total_score
