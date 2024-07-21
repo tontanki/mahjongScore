@@ -22,7 +22,7 @@ if not DEVELOPMENT_MODE:
 
 async def load_extensions():
     initial_extensions = ['cogs.score', 'cogs.player_list',
-                          'cogs.register', 'cogs.delete',  'cogs.history']
+                          'cogs.register', 'cogs.delete',  'cogs.history', 'cogs.extract_numbers']
     for extension in initial_extensions:
         await bot.load_extension(extension)
 
