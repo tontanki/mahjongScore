@@ -49,8 +49,8 @@ class HistoryData:
             if latest_timestamp:
                 timestamp = latest_timestamp[0]
                 self.cursor.execute('''
-                    DELETE FROM history WHERE player_id = ? AND timestamp = ?
-                ''', (player_id, timestamp))
+                    DELETE FROM history WHERE timestamp = ?
+                ''', (timestamp,))
                 self.connection.commit()
                 return "同じtimestampを持つデータを削除しました。"
             else:

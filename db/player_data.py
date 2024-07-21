@@ -46,7 +46,7 @@ class PlayerData:
         self.connection.commit()
         return registered_players, already_registered
 
-    def show_ranking(self):
+    def show_player_list(self):
         self.cursor.execute('''
             SELECT players.player_name, scores.score
             FROM scores

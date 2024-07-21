@@ -3,24 +3,24 @@ from db.player_data import PlayerData
 from tabulate import tabulate
 
 
-class RankingCog(commands.Cog):
+class player_listCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.players = PlayerData()
 
-    @commands.command(name='ranking')
-    async def ranking_command(self, ctx):
-        response = self.players.show_ranking()
+    @commands.command(name='player_list')
+    async def player_list_command(self, ctx):
+        response = self.players.show_player_list()
 
     # データのリストを作成
         data = [(player, score) for player, score in response]
 
         # タブレートを使用して表を作成
-        ranking_message = tabulate(
+        player_list_message = tabulate(
             data, headers=["Player", "Score"], tablefmt="grid")
 
-        await ctx.send(f"```\n{ranking_message}\n```")
+        await ctx.send(f"```\n{player_list_message}\n```")
 
 
 async def setup(bot):
-    await bot.add_cog(RankingCog(bot))
+    await bot.add_cog(player_listCog(bot))
