@@ -8,7 +8,7 @@ class player_listCog(commands.Cog):
         self.bot = bot
         self.players = PlayerData()
 
-    @commands.command(name='player_list')
+    @commands.command(name='list')
     async def player_list_command(self, ctx):
         response = self.players.show_player_list()
 
