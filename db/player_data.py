@@ -90,3 +90,8 @@ class PlayerData:
             '''SELECT player_id FROM players WHERE player_name=?''', (player_name,))
         result = self.cursor.fetchone()
         return result[0] if result else None
+
+    def is_registered(self, player_name):
+        self.cursor.execute(
+            '''SELECT player_id FROM players WHERE player_name=?''', (player_name,))
+        return bool(self.cursor.fetchone())

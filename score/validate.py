@@ -1,3 +1,7 @@
+from db.player_data import PlayerData
+player_data = PlayerData()
+
+
 def validate_scores(parts):
     # 入力が3回または4回のペアであることを確認
     if len(parts) not in [6, 8]:
@@ -10,7 +14,12 @@ def validate_scores(parts):
     if len(player_names) != len(set(player_names)):
         raise ValueError("プレイヤー名が重複しています。")
 
-    # 入力をプレイヤー名とスコアのリストとして受け取る
+    # プレイヤー名が存在するか確認
+    for player_name in player_names:
+        if not player_data.is_registered(player_name):
+            raise ValueError(f"{player_name} は登録されていません。")
+
+        # 入力をプレイヤー名とスコアのリストとして受け取る
     scores = [parts[i] for i in range(1, len(parts), 2)]
 
     # スコアが全て数値であるか確認し、数値に変換
