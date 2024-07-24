@@ -74,22 +74,25 @@ class PlayerData:
         else:
             return f"{player_name}は登録されていません"
 
-    async def update_score(self, player_name):
-        self.cursor.execute(
-            '''SELECT player_id FROM players WHERE player_name=?''', (player_name,))
-        result = self.cursor.fetchone()
-        if result:
-            player_id = result[0]
+    def update_score(self):
+        # 全てのplayer_idを取得
+        self.cursor.execute('''SELECT player_id FROM players''')
+        players = self.cursor.fetchall()
 
-            total_score = await self.history_data.get_total_score(player_name)
+        for player_id in players:
+            player_id = player_id[0]
+            # HistoryDataクラスを使用している場合は、非同期メソッドの呼び出しに変更する必要があります
+            # ここでは、historyテーブルから直接合計スコアを計算する例を示します
+            self.cursor.execute(
+                '''SELECT SUM(score) FROM history WHERE player_id=?''', (player_id,))
+            total_score = self.cursor.fetchone()[0] or 0  # スコアがない場合は0とする
 
+            # scoresテーブルを更新
             self.cursor.execute(
                 '''UPDATE scores SET score=? WHERE player_id=?''', (total_score, player_id))
-            self.connection.commit()
 
-            return f"{player_name}のスコアを{total_score}に更新しました"
-        else:
-            return f"{player_name}は登録されていません"
+        self.connection.commit()
+        return "全てのプレイヤーのスコアを更新しました"
 
     def get_player_id(self, player_name):
         self.cursor.execute(

@@ -64,7 +64,7 @@ class HistoryData:
         result = self.cursor.fetchone()
         return result[0] if result else None
 
-    async def get_total_score(self, player_name):
+    def get_total_score(self, player_name):
         player_id = self.get_player_id(player_name)
         if player_id:
             self.cursor.execute(
