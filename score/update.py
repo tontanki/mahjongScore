@@ -11,7 +11,5 @@ async def update_player_scores(scores):
         for player, score in scores:
             await history.insert_score(player, score, timestamp)
 
-        await player_data.update_score()
-
     except Exception as e:
         return f"エラーが発生しました: {e}"

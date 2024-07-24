@@ -18,6 +18,17 @@ class HistoryData:
                 FOREIGN KEY (player_id) REFERENCES players (player_id)
             )
         ''')
+        # 既存のトリガーを削除
+        self.cursor.execute('DROP TRIGGER IF EXISTS UpdatePlayerScore')
+
+        self.cursor.execute('''
+                CREATE TRIGGER UpdatePlayerScore AFTER INSERT ON history
+                BEGIN
+                    UPDATE scores
+                    SET score = (SELECT SUM(score) FROM history WHERE player_id = NEW.player_id)
+                    WHERE player_id = NEW.player_id;
+                END;
+            ''')
         self.connection.commit()
 
     async def insert_score(self, player_name, score, timestamp):
