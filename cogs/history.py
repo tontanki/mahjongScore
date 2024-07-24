@@ -22,7 +22,7 @@ class HistoryCog(commands.Cog):
         history_message = tabulate(
             data, headers=["Player", "Timestamp", "Score"], tablefmt="grid")
 
-        await ctx.send(f"```\n{history_message}\n```")
+        await ctx.send(f"```\n{history_message}\n```", silent=True)
 
 
 async def setup(bot):

@@ -13,9 +13,9 @@ class RegisterCog(commands.Cog):
             *players_to_register)
 
         if registered_players:
-            await ctx.send(f"{', '.join(registered_players)} を登録しました。")
+            await ctx.send(f"{', '.join(registered_players)} を登録しました。", silent=True)
         if already_registered:
-            await ctx.send(f"{', '.join(already_registered)} はすでに登録されています。")
+            await ctx.send(f"{', '.join(already_registered)} はすでに登録されています。", silent=True)
 
 
 async def setup(bot):

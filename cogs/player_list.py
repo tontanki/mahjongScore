@@ -19,7 +19,7 @@ class player_listCog(commands.Cog):
         player_list_message = tabulate(
             data, headers=["Player", "Score"], tablefmt="grid")
 
-        await ctx.send(f"```\n{player_list_message}\n```")
+        await ctx.send(f"\n```\n{player_list_message}\n```", silent=True)
 
 
 async def setup(bot):

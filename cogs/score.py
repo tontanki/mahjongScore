@@ -18,11 +18,11 @@ class ScoreCog(commands.Cog):
         try:
             result = await update_scores(ctx, args)
             if result:
-                await ctx.send(result)
+                await ctx.send(result, silent=True)
             else:
-                await ctx.send(f"スコアを更新しました。")
+                await ctx.send(f"スコアを更新しました。", silent=True)
         except Exception as e:
-            await ctx.send(f"エラーが発生しました: {e}")
+            await ctx.send(f"エラーが発生しました: {e}", silent=True)
 
 
 async def setup(bot):

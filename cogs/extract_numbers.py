@@ -38,13 +38,13 @@ class ExtractNumbersCog(commands.Cog):
                 numbers = ''.join(filter(str.isdigit, text))
 
                 if numbers:
-                    await ctx.send(f'抽出された数字: {numbers}')
+                    await ctx.send(f'抽出された数字: {numbers}', silent=True)
                 else:
-                    await ctx.send('画像から数字を抽出できませんでした。')
+                    await ctx.send('画像から数字を抽出できませんでした。', silent=True)
             except Exception as e:
-                await ctx.send(f'エラーが発生しました: {e}')
+                await ctx.send(f'エラーが発生しました: {e}', silent=True)
         else:
-            await ctx.send('画像を添付してください。')
+            await ctx.send('画像を添付してください。', silent=True)
 
 
 async def setup(bot):
