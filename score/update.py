@@ -10,8 +10,7 @@ async def update_player_scores(scores):
         timestamp = datetime.timestamp(datetime.now())
         for player, score in scores:
             await history.insert_score(player, score, timestamp)
-            total_score = await history.get_total_score(player)
-            await player_data.update_score(player, total_score)
+            await player_data.update_score(player)
 
     except Exception as e:
         return f"エラーが発生しました: {e}"

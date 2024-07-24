@@ -1,4 +1,5 @@
 import sqlite3
+from db.history_data import HistoryData  # HistoryDataクラスをインポート
 
 
 class PlayerData:
@@ -6,6 +7,7 @@ class PlayerData:
         self.db_file = db_file
         self.connection = sqlite3.connect(self.db_file)
         self.cursor = self.connection.cursor()
+        self.history_data = HistoryData(db_file)  # HistoryDataのインスタンスを作成
         self._create_table()
 
     def _create_table(self):
@@ -25,8 +27,8 @@ class PlayerData:
         self.connection.commit()
 
     def register_player(self, *players_name):
-        registered_players = []  # 登録したプレイヤー
-        already_registered = []  # 登録済みのプレイヤー
+        registered_players = []
+        already_registered = []
 
         for player_name in players_name:
             self.cursor.execute(
@@ -72,16 +74,20 @@ class PlayerData:
         else:
             return f"{player_name}は登録されていません"
 
-    async def update_score(self, player_name, score):
+    async def update_score(self, player_name):
         self.cursor.execute(
             '''SELECT player_id FROM players WHERE player_name=?''', (player_name,))
         result = self.cursor.fetchone()
         if result:
             player_id = result[0]
+
+            total_score = await self.history_data.get_total_score(player_name)
+
             self.cursor.execute(
-                '''UPDATE scores SET score=? WHERE player_id=?''', (score, player_id))
+                '''UPDATE scores SET score=? WHERE player_id=?''', (total_score, player_id))
             self.connection.commit()
-            return f"{player_name}のスコアを{score}に更新しました"
+
+            return f"{player_name}のスコアを{total_score}に更新しました"
         else:
             return f"{player_name}は登録されていません"
 
